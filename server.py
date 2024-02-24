@@ -253,6 +253,8 @@ class PromptServer():
 
         @routes.get("/view")
         async def view_image(request):
+            from datetime import datetime
+            print("/view: start " + str(datetime.now()))
             if "filename" in request.rel_url.query:
                 filename = request.rel_url.query["filename"]
                 filename,output_dir = folder_paths.annotated_filepath(filename)
@@ -298,6 +300,8 @@ class PromptServer():
                             return web.Response(body=buffer.read(), content_type=f'image/{image_format}',
                                                 headers={"Content-Disposition": f"filename=\"{filename}\""})
 
+                    print("/view: looking up file by channel " + str(datetime.now()))
+
                     if 'channel' not in request.rel_url.query:
                         channel = 'rgba'
                     else:
@@ -335,6 +339,7 @@ class PromptServer():
                             return web.Response(body=alpha_buffer.read(), content_type='image/png',
                                                 headers={"Content-Disposition": f"filename=\"{filename}\""})
                     else:
+                        print("/view: returning web.FileResponse " + str(datetime.now()))
                         return web.FileResponse(file, headers={"Content-Disposition": f"filename=\"{filename}\""})
 
             return web.Response(status=404)
